@@ -619,16 +619,46 @@ npx eslint --init
 
 ---
 
+#### Paso 8: Agregar scripts de SAM para testing local ✅
+**Nota**: SAM CLI usa el template generado por CDK (no requiere template.yaml manual)
+
+**Scripts agregados al package.json:**
+```bash
+# Compilar TypeScript y generar template CDK
+pnpm run sam:build
+
+# Iniciar API Gateway local (http://localhost:3000)
+pnpm run sam:local:api
+
+# Invocar función Lambda específica
+pnpm run sam:local:invoke -- -e events/test.json FunctionName
+```
+
+**Flujo de trabajo con SAM:**
+1. CDK define infraestructura en TypeScript (`infrastructure/`)
+2. `cdk synth` genera CloudFormation template en `cdk.out/`
+3. SAM CLI usa ese template para testing local de Lambdas
+4. **Ventaja**: Una sola fuente de verdad (CDK), testing local con SAM
+
+---
+
 ### ✅ **Fase 0 COMPLETADA**
 
 **Resumen de archivos creados:**
-1. ✅ package.json (actualizado con dependencias y scripts)
+1. ✅ package.json (actualizado con dependencias y scripts + SAM local)
 2. ✅ tsconfig.json (TypeScript para Lambda + Clean Architecture)
 3. ✅ jest.config.js (Testing con 80% coverage)
 4. ✅ eslint.config.mjs (Linting para TypeScript)
 5. ✅ tsconfig.cdk.json (TypeScript para CDK)
 6. ✅ .gitignore (Archivos a ignorar)
 7. ✅ README.md (Documentación del proyecto)
+
+**Herramientas configuradas:**
+- ✅ AWS CDK (Infrastructure as Code)
+- ✅ SAM CLI (Local testing de Lambdas)
+- ✅ TypeScript (Desarrollo type-safe)
+- ✅ Jest (Unit testing con 80% coverage)
+- ✅ ESLint (Code quality)
 
 **Estado**: Base del proyecto completamente configurada y lista para comenzar la implementación.
 

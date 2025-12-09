@@ -19,6 +19,9 @@
     "cdk:deploy:dev": "cdk deploy UserServiceStack-Dev --app 'npx ts-node --project tsconfig.cdk.json infrastructure/bin/app.ts'",
     "cdk:deploy:prod": "cdk deploy UserServiceStack-Prod --app 'npx ts-node --project tsconfig.cdk.json infrastructure/bin/app.ts'",
     "cdk:destroy:dev": "cdk destroy UserServiceStack-Dev --app 'npx ts-node --project tsconfig.cdk.json infrastructure/bin/app.ts'",
+    "sam:build": "pnpm run build && pnpm run cdk:synth",
+    "sam:local:api": "sam local start-api -t cdk.out/UserServiceStack-Dev.template.json",
+    "sam:local:invoke": "sam local invoke -t cdk.out/UserServiceStack-Dev.template.json",
     "clean": "rm -rf dist cdk.out coverage"
   },
   "dependencies": {

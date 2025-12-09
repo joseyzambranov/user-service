@@ -1,0 +1,20 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    /* Override para CDK - permite includes más amplios */
+    "rootDir": ".",
+
+    /* CDK necesita estos tipos */
+    "types": ["node"],
+
+    /* Permite importar archivos fuera de rootDir */
+    "composite": false
+  },
+  "include": [
+    "infrastructure/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "cdk.out"
+  ]
+}

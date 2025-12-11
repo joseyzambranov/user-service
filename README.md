@@ -52,6 +52,7 @@ user-service/
 - pnpm 8.x
 - AWS CLI configurado
 - AWS CDK CLI
+- AWS SAM CLI (para testing local)
 
 ### Instalación
 
@@ -80,6 +81,21 @@ pnpm run lint:fix
 # Generar documentación OpenAPI/Swagger
 pnpm run swagger:generate
 ```
+
+### Testing Local con SAM
+
+```bash
+# Compilar y generar template CDK
+pnpm run sam:build
+
+# Iniciar API Gateway localmente (http://localhost:3000)
+pnpm run sam:local:api
+
+# Invocar función Lambda específica
+pnpm run sam:local:invoke -- -e events/test.json FunctionName
+```
+
+**Nota**: SAM CLI usa el template CloudFormation generado por CDK (`cdk.out/`), no requiere un `template.yaml` separado.
 
 ### Deployment
 
@@ -172,6 +188,7 @@ Este microservicio cubre los siguientes dominios del examen:
 - **Linting**: ESLint
 - **Validación**: Zod
 - **IaC**: AWS CDK
+- **Local Testing**: AWS SAM CLI
 - **API Docs**: OpenAPI 3.0 + Swagger UI
 
 ## 📖 Documentación Adicional
@@ -190,6 +207,9 @@ Este microservicio cubre los siguientes dominios del examen:
 | `lint` | Verificar código con ESLint |
 | `lint:fix` | Corregir problemas de linting |
 | `swagger:generate` | Generar especificación OpenAPI |
+| `sam:build` | Compilar y generar template CDK |
+| `sam:local:api` | Iniciar API Gateway local (puerto 3000) |
+| `sam:local:invoke` | Invocar función Lambda específica localmente |
 | `cdk:synth` | Sintetizar template CloudFormation |
 | `cdk:deploy:dev` | Deploy a entorno de desarrollo |
 | `cdk:deploy:prod` | Deploy a entorno de producción |

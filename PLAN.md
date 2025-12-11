@@ -416,22 +416,22 @@ export const handler = async (event) => {
 
 1. **Setup**:
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. **Desarrollo**:
    ```bash
-   npm run build
-   npm run test
-   npm run lint
-   npm run swagger:generate  # Genera OpenAPI spec
+   pnpm run build
+   pnpm run test
+   pnpm run lint
+   pnpm run swagger:generate  # Genera OpenAPI spec
    ```
 
 3. **Deploy**:
    ```bash
-   npm run build
-   npm run swagger:generate  # Regenerar antes de deploy
-   npm run cdk:deploy:dev
+   pnpm run build
+   pnpm run swagger:generate  # Regenerar antes de deploy
+   pnpm run cdk:deploy:dev
    ```
 
 4. **Acceder a Swagger UI**:
@@ -479,12 +479,12 @@ export const handler = async (event) => {
 
 ## 📝 Checklist de Verificación
 
-- [ ] `npm install` completa sin errores
-- [ ] `npm run build` compila TypeScript
-- [ ] `npm run lint` pasa sin errores
-- [ ] `npm run test` logra >80% coverage
-- [ ] `npm run swagger:generate` genera docs/openapi.json
-- [ ] `npm run cdk:synth` genera template CloudFormation
+- [ ] `pnpm install` completa sin errores
+- [ ] `pnpm run build` compila TypeScript
+- [ ] `pnpm run lint` pasa sin errores
+- [ ] `pnpm run test` logra >80% coverage
+- [ ] `pnpm run swagger:generate` genera docs/openapi.json
+- [ ] `pnpm run cdk:synth` genera template CloudFormation
 - [ ] Domain layer tiene cero dependencias externas
 - [ ] Todos los use cases siguen SRP (Single Responsibility)
 - [ ] Repository interface en domain, implementación en infrastructure

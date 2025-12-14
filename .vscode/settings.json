@@ -1,0 +1,99 @@
+{
+  // ========================================
+  // TypeScript Configuration
+  // ========================================
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+
+  // Usar tsconfig.json para el proyecto
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+
+  // Actualizar imports automáticamente al mover archivos
+  "typescript.updateImportsOnFileMove.enabled": "always",
+
+  // Sugerencias de código
+  "typescript.suggest.autoImports": true,
+  "typescript.suggest.paths": true,
+
+  // ========================================
+  // Editor Configuration
+  // ========================================
+  // Formatear al guardar
+  "editor.formatOnSave": true,
+
+  // Tamaño de indentación
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+
+  // Mostrar espacios en blanco
+  "editor.renderWhitespace": "boundary",
+
+  // Longitud de línea recomendada
+  "editor.rulers": [100],
+
+  // Code actions al guardar
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+
+  // ========================================
+  // Files Configuration
+  // ========================================
+  // Fin de línea consistente (LF para compatibilidad con Linux/Mac)
+  "files.eol": "\n",
+
+  // Insertar nueva línea al final del archivo
+  "files.insertFinalNewline": true,
+
+  // Remover espacios en blanco al final
+  "files.trimTrailingWhitespace": true,
+
+  // Archivos a excluir de la búsqueda
+  "files.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/.cdk.out": true
+  },
+
+  // ========================================
+  // Search Configuration
+  // ========================================
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/.cdk.out": true,
+    "**/pnpm-lock.yaml": true
+  },
+
+  // ========================================
+  // Jest Configuration (opcional - solo si tienes la extensión de Jest)
+  // ========================================
+  // "jest.runMode": "on-demand",
+
+  // ========================================
+  // Language Specific Settings
+  // ========================================
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.formatOnSave": true
+  },
+
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.formatOnSave": true
+  },
+
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features",
+    "editor.formatOnSave": true
+  },
+
+  "[markdown]": {
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": false
+  }
+}

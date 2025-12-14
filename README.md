@@ -143,7 +143,39 @@ curl -X POST https://API_URL/users \
 
 ## 🧪 Testing
 
-El proyecto mantiene un coverage mínimo de **80%** en todas las métricas.
+El proyecto mantiene un coverage mínimo de **80%** en todas las métricas utilizando **BDD (Behavior-Driven Development)** con **Gherkin** y **jest-cucumber**.
+
+### Enfoque BDD con Gherkin
+
+Los tests están escritos en formato **Given-When-Then** utilizando `jest-cucumber`, lo que permite:
+- ✅ Tests más legibles y descriptivos
+- ✅ Especificaciones ejecutables en lenguaje natural
+- ✅ Colaboración entre desarrolladores, QA y stakeholders
+- ✅ Documentación viva del comportamiento del sistema
+
+**Ejemplo de test con Gherkin:**
+```typescript
+test('Create user with valid data', ({ given, when, then }) => {
+  given('valid user data', () => {
+    // Arrange
+  });
+
+  when('I create the user', () => {
+    // Act
+  });
+
+  then('the user should be created successfully', () => {
+    // Assert
+  });
+});
+```
+
+### Test Fixtures
+
+Los tests utilizan **fixtures centralizadas** con **Builder** y **Factory patterns** para evitar duplicación de código:
+- Datos de test reutilizables en `tests/fixtures/`
+- Builder pattern para crear objetos de test complejos
+- Factory methods para casos de uso comunes
 
 ```bash
 # Run all tests
@@ -184,7 +216,7 @@ Este microservicio cubre los siguientes dominios del examen:
 
 - **Runtime**: Node.js 20.x
 - **Lenguaje**: TypeScript 5.x
-- **Framework de Testing**: Jest
+- **Framework de Testing**: Jest + jest-cucumber (BDD)
 - **Linting**: ESLint
 - **Validación**: Zod
 - **IaC**: AWS CDK

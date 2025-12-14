@@ -10,7 +10,6 @@
     "resolveJsonModule": true,
 
     /* File Layout */
-    "rootDir": "./src",
     "outDir": "./dist",
 
     /* Emit */
@@ -46,6 +45,6 @@
       "@shared/*": ["src/shared/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.test.ts", "cdk.out"]
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["node_modules", "dist", "cdk.out"]
 }

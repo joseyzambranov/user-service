@@ -93,10 +93,12 @@ user-service/
 │
 ├── tests/
 │   ├── unit/
-│   │   ├── domain/
+│   │   ├── domain/              # Tests BDD con Gherkin
 │   │   ├── application/
 │   │   └── infrastructure/
 │   ├── integration/
+│   ├── fixtures/                # Test fixtures (Builder & Factory patterns)
+│   │   └── userFixtures.ts
 │   └── helpers/
 │
 ├── docs/
@@ -277,11 +279,37 @@ export const handler = async (event) => {
     - DELETE /users/{id}
 
 ### Fase 8: Testing (12+ archivos)
-**Objetivo**: Tests unitarios e integración (>80% coverage)
+**Objetivo**: Tests unitarios e integración (>80% coverage) usando **BDD con jest-cucumber**
 
-**Tests Unitarios**:
-1. domain/entities/User.test.ts
-2. domain/services/UserDomainService.test.ts
+**Enfoque de Testing**:
+- **BDD (Behavior-Driven Development)** con **Gherkin** (Given-When-Then)
+- Framework: **jest-cucumber** para escribir tests en lenguaje natural
+- **Test Fixtures** centralizadas con Builder y Factory patterns
+- Tests legibles que sirven como documentación viva
+
+**Estructura de tests con Gherkin:**
+```typescript
+test('Create user with valid data', ({ given, when, then }) => {
+  given('valid user data', () => {
+    // Arrange: preparar datos de test usando fixtures
+    const userData = TEST_USER_DATA;
+  });
+
+  when('I create the user', () => {
+    // Act: ejecutar la acción
+    user = User.create(userData);
+  });
+
+  then('the user should be created successfully', () => {
+    // Assert: verificar el resultado
+    expect(user.email).toBe(userData.email);
+  });
+});
+```
+
+**Tests Unitarios (con BDD)**:
+1. domain/entities/User.test.ts - Tests de la entidad User con Gherkin
+2. domain/services/UserDomainService.test.ts - Tests del servicio de dominio con Gherkin
 3. application/use-cases/CreateUserUseCase.test.ts
 4. application/use-cases/GetUserUseCase.test.ts
 5. application/use-cases/UpdateUserUseCase.test.ts
@@ -294,9 +322,16 @@ export const handler = async (event) => {
 10. integration/handlers/createUser.test.ts
 11. integration/handlers/getUser.test.ts
 
-**Test Helpers**:
-12. helpers/testData.ts - Factories de datos mock
+**Test Fixtures y Helpers**:
+12. fixtures/userFixtures.ts - Datos de test reutilizables con Builder y Factory patterns
 13. helpers/mockRepository.ts - Mock del repositorio
+
+**Beneficios del enfoque BDD**:
+- ✅ Tests más legibles para stakeholders no técnicos
+- ✅ Especificaciones ejecutables (documentación que no miente)
+- ✅ Mejor colaboración entre desarrolladores, QA y product owners
+- ✅ Reduce duplicación de código con fixtures centralizadas
+- ✅ Facilita el mantenimiento de tests
 
 ### Fase 9: Documentación Swagger/OpenAPI (3 archivos)
 **Objetivo**: Generar documentación interactiva de la API con Swagger UI
@@ -354,6 +389,7 @@ export const handler = async (event) => {
     "constructs": "^10.0.0",
     "eslint": "^8.50.0",
     "jest": "^29.7.0",
+    "jest-cucumber": "^4.5.0",
     "ts-jest": "^29.1.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.3.0"
@@ -408,7 +444,8 @@ export const handler = async (event) => {
 - ✅ **Structured Logging**: CloudWatch logs en JSON
 - ✅ **X-Ray Tracing**: Observabilidad distribuida
 - ✅ **Infrastructure as Code**: CDK
-- ✅ **Testing**: Unit + Integration tests
+- ✅ **BDD Testing**: Behavior-Driven Development con jest-cucumber y Gherkin
+- ✅ **Test Fixtures**: Builder y Factory patterns para datos de test
 - ✅ **API Documentation**: OpenAPI 3.0 + Swagger UI
 - ✅ **Schema-First Development**: Zod → OpenAPI
 

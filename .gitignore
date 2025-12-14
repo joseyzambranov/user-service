@@ -22,7 +22,10 @@ cdk.context.json
 .env.*.local
 
 # IDE
-.vscode/
+# Permitimos .vscode/settings.json para compartir configuración del proyecto
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo

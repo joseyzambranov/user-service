@@ -1,0 +1,26 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    /* Permite imports desde tests sin restricciones de rootDir */
+    "rootDir": ".",
+
+    /* No emitir archivos compilados para tests */
+    "noEmit": true,
+    "composite": false,
+
+    /* Permite importar tipos de Jest */
+    "types": ["jest", "node"]
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "cdk.out"
+  ],
+  "references": [
+    { "path": "./tsconfig.json" }
+  ]
+}

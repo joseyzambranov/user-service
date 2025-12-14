@@ -54,6 +54,13 @@ const config = {
     '^@shared/(.*)$': '<rootDir>/src/shared/$1'
   },
 
+  // Configuración de transformadores
+  transform: {
+    '^.+\\.ts$': ['ts-jest', {
+      tsconfig: 'tsconfig.test.json'
+    }]
+  },
+
   // A list of reporter names that Jest uses when writing coverage reports
   // coverageReporters: [
   //   "json",

@@ -26,8 +26,9 @@
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.2.0",
-    "@aws-sdk/client-dynamodb": "^3.668.0",
-    "@aws-sdk/lib-dynamodb": "^3.668.0",
+    "@aws-sdk/client-dynamodb": "^3.954.0",
+    "@aws-sdk/lib-dynamodb": "^3.954.0",
+    "@aws-sdk/util-dynamodb": "^3.954.0",
     "aws-lambda": "^1.0.7",
     "uuid": "^10.0.0",
     "zod": "^3.23.8"

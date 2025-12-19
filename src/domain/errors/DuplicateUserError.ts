@@ -7,15 +7,15 @@
  * - DynamoDB: Conditional writes para evitar duplicados
  */
 
-export class DuplicateUserError extends Error {
+import { DomainError } from '@shared/errors/DomainError';
+
+export class DuplicateUserError extends DomainError {
   public readonly code: string = 'DUPLICATE_USER';
   public readonly statusCode: number = 409; // Conflict
+  public readonly email: string;
 
   constructor(email: string) {
     super(`User with email '${email}' already exists`);
-    this.name = 'DuplicateUserError';
-
-    // Mantiene el stack trace correcto en V8 engines
-    Error.captureStackTrace(this, this.constructor);
+    this.email = email;
   }
 }

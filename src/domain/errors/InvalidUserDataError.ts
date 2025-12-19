@@ -6,15 +6,13 @@
  * - Separación de validación de formato vs validación de negocio
  */
 
-export class InvalidUserDataError extends Error {
+import { DomainError } from '@shared/errors/DomainError';
+
+export class InvalidUserDataError extends DomainError {
   public readonly code: string = 'INVALID_USER_DATA';
   public readonly statusCode: number = 400; // Bad Request
 
   constructor(message: string, public readonly field?: string) {
     super(message);
-    this.name = 'InvalidUserDataError';
-
-    // Mantiene el stack trace correcto en V8 engines
-    Error.captureStackTrace(this, this.constructor);
   }
 }

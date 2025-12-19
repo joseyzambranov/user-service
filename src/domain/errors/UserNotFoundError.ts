@@ -7,15 +7,15 @@
  * - Facilita troubleshooting (Dominio 4.1)
  */
 
-export class UserNotFoundError extends Error {
+import { DomainError } from '@shared/errors/DomainError';
+
+export class UserNotFoundError extends DomainError {
   public readonly code: string = 'USER_NOT_FOUND';
   public readonly statusCode: number = 404;
+  public readonly userId: string;
 
   constructor(userId: string) {
     super(`User with ID '${userId}' not found`);
-    this.name = 'UserNotFoundError';
-
-    // Mantiene el stack trace correcto en V8 engines
-    Error.captureStackTrace(this, this.constructor);
+    this.userId = userId;
   }
 }

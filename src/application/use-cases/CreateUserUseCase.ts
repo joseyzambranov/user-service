@@ -75,6 +75,9 @@ export class CreateUserUseCase {
       lastName: dto.lastName,
     });
 
+    // 3.5. Validar reglas de negocio del dominio
+    this.userDomainService.validateUserData(user);
+
     // Asignar ID generado
     const userWithId = User.reconstitute({
       id: userId,

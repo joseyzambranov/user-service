@@ -159,6 +159,14 @@ export const UserFixtures = {
       .build(),
 
   /**
+   * Usuario con email específico
+   */
+  withEmail: (email: string): UserProps =>
+    new UserPropsBuilder()
+      .withEmail(email)
+      .build(),
+
+  /**
    * Usuario con datos actualizados
    */
   updatedUser: (): UserProps =>

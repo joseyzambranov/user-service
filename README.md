@@ -5,12 +5,28 @@ Primer microservicio del proyecto de certificación AWS Certified Developer Asso
 ## 🎯 Objetivo
 
 Microservicio serverless para gestión de usuarios (CRUD completo) utilizando:
+
 - **AWS Lambda** - Funciones serverless
 - **API Gateway** - REST API
 - **DynamoDB** - Base de datos NoSQL
 - **CDK** - Infrastructure as Code
 
 ## 🏗️ Arquitectura
+
+### Diagrama de Arquitectura AWS
+
+![User Service Architecture](docs/Diagrama-arquitectura-user-service.drawio.svg)
+
+**Componentes principales:**
+
+- **5 Lambda Functions**: CreateUser, GetUser, UpdateUser, DeleteUser, ListUsers
+- **API Gateway**: REST API con 5 endpoints y CORS habilitado
+- **DynamoDB**: Tabla UsersTable con GSI EmailIndex
+- **CloudWatch Logs**: Logging centralizado de todas las Lambdas
+- **CloudFormation**: Infrastructure as Code generada por CDK
+- **Swagger UI**: Documentación interactiva en `/api-docs`
+
+### Clean Architecture
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -25,6 +41,7 @@ Microservicio serverless para gestión de usuarios (CRUD completo) utilizando:
 ```
 
 ### Principios
+
 - ✅ Separación de capas (Domain → Application → Infrastructure)
 - ✅ Dependency Inversion (interfaces en domain)
 - ✅ Single Responsibility Principle
@@ -116,17 +133,18 @@ pnpm run cdk:destroy:dev
 ## 📋 API Endpoints
 
 ### Documentación Interactiva
+
 Después del deploy, accede a Swagger UI en: `https://{API_URL}/api-docs`
 
 ### Endpoints
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| POST | /users | Crear un nuevo usuario |
-| GET | /users | Listar usuarios (con paginación) |
-| GET | /users/{id} | Obtener usuario por ID |
-| PUT | /users/{id} | Actualizar usuario |
-| DELETE | /users/{id} | Eliminar usuario |
+| Método | Ruta        | Descripción                      |
+| ------ | ----------- | -------------------------------- |
+| POST   | /users      | Crear un nuevo usuario           |
+| GET    | /users      | Listar usuarios (con paginación) |
+| GET    | /users/{id} | Obtener usuario por ID           |
+| PUT    | /users/{id} | Actualizar usuario               |
+| DELETE | /users/{id} | Eliminar usuario                 |
 
 ### Ejemplo de Request
 
@@ -148,23 +166,25 @@ El proyecto mantiene un coverage mínimo de **80%** en todas las métricas utili
 ### Enfoque BDD con Gherkin
 
 Los tests están escritos en formato **Given-When-Then** utilizando `jest-cucumber`, lo que permite:
+
 - ✅ Tests más legibles y descriptivos
 - ✅ Especificaciones ejecutables en lenguaje natural
 - ✅ Colaboración entre desarrolladores, QA y stakeholders
 - ✅ Documentación viva del comportamiento del sistema
 
 **Ejemplo de test con Gherkin:**
+
 ```typescript
-test('Create user with valid data', ({ given, when, then }) => {
-  given('valid user data', () => {
+test("Create user with valid data", ({ given, when, then }) => {
+  given("valid user data", () => {
     // Arrange
   });
 
-  when('I create the user', () => {
+  when("I create the user", () => {
     // Act
   });
 
-  then('the user should be created successfully', () => {
+  then("the user should be created successfully", () => {
     // Assert
   });
 });
@@ -173,6 +193,7 @@ test('Create user with valid data', ({ given, when, then }) => {
 ### Test Fixtures
 
 Los tests utilizan **fixtures centralizadas** con **Builder** y **Factory patterns** para evitar duplicación de código:
+
 - Datos de test reutilizables en `tests/fixtures/`
 - Builder pattern para crear objetos de test complejos
 - Factory methods para casos de uso comunes
@@ -193,12 +214,14 @@ pnpm run test:coverage
 Este microservicio cubre los siguientes dominios del examen:
 
 ### Domain 1.1: Develop code for applications on AWS
+
 - Lambda function handlers
 - Dependency injection pattern
 - Error handling en Lambda
 - Environment variables
 
 ### Domain 1.3: Use data stores in development
+
 - DynamoDB single-table design
 - Primary keys y Sort keys
 - Global Secondary Index (GSI)
@@ -206,6 +229,7 @@ Este microservicio cubre los siguientes dominios del examen:
 - Conditional writes
 
 ### Domain 1.4: Develop code for APIs
+
 - REST API con API Gateway
 - Lambda integration
 - HTTP status codes
@@ -231,22 +255,22 @@ Este microservicio cubre los siguientes dominios del examen:
 
 ## 📝 Scripts Disponibles
 
-| Script | Descripción |
-|--------|-------------|
-| `build` | Compilar TypeScript a JavaScript |
-| `test` | Ejecutar tests |
-| `test:coverage` | Tests con reporte de coverage |
-| `lint` | Verificar código con ESLint |
-| `lint:fix` | Corregir problemas de linting |
-| `swagger:generate` | Generar especificación OpenAPI |
-| `sam:build` | Compilar y generar template CDK |
-| `sam:local:api` | Iniciar API Gateway local (puerto 3000) |
+| Script             | Descripción                                  |
+| ------------------ | -------------------------------------------- |
+| `build`            | Compilar TypeScript a JavaScript             |
+| `test`             | Ejecutar tests                               |
+| `test:coverage`    | Tests con reporte de coverage                |
+| `lint`             | Verificar código con ESLint                  |
+| `lint:fix`         | Corregir problemas de linting                |
+| `swagger:generate` | Generar especificación OpenAPI               |
+| `sam:build`        | Compilar y generar template CDK              |
+| `sam:local:api`    | Iniciar API Gateway local (puerto 3000)      |
 | `sam:local:invoke` | Invocar función Lambda específica localmente |
-| `cdk:synth` | Sintetizar template CloudFormation |
-| `cdk:deploy:dev` | Deploy a entorno de desarrollo |
-| `cdk:deploy:prod` | Deploy a entorno de producción |
-| `cdk:destroy:dev` | Destruir stack de desarrollo |
-| `clean` | Limpiar archivos generados |
+| `cdk:synth`        | Sintetizar template CloudFormation           |
+| `cdk:deploy:dev`   | Deploy a entorno de desarrollo               |
+| `cdk:deploy:prod`  | Deploy a entorno de producción               |
+| `cdk:destroy:dev`  | Destruir stack de desarrollo                 |
+| `clean`            | Limpiar archivos generados                   |
 
 ## 🤝 Contribuir
 

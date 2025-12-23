@@ -6,59 +6,88 @@
  * - Oculta detalles de implementación interna
  * - Compatible con OpenAPI/Swagger
  *
- * 🎯 PATRÓN: DTO + Mapper
- * - DTO: estructura de datos para API
+ * 🎯 PATRÓN: DTO + Mapper + Schema
+ * - Schema Zod: validación y generación de OpenAPI
+ * - DTO: tipo TypeScript inferido del schema
  * - Mapper: convierte entidad de dominio a DTO
  */
 
+import { z } from 'zod';
 import { User } from '@domain/entities/User';
 
 /**
- * DTO de respuesta para un usuario
+ * Schema Zod para UserResponse
  *
- * Incluye solo la información que debe ser visible para el cliente
+ * 📚 EXAMEN AWS: Schema-First Development
+ * - Define estructura de datos con Zod
+ * - Genera OpenAPI spec automáticamente
+ * - Tipo TypeScript inferido (DRY)
  */
-export interface UserResponseDto {
+export const UserResponseSchema = z.object({
   /**
-   * ID único del usuario
+   * ID único del usuario (UUID v4)
    */
-  id: string;
+  id: z.string({
+    description: 'User unique identifier',
+  }),
 
   /**
    * Email del usuario
    */
-  email: string;
+  email: z.string().email({
+    message: 'Invalid email format',
+  }).describe('User email address'),
 
   /**
    * Nombre del usuario
    */
-  firstName: string;
+  firstName: z.string({
+    description: 'User first name',
+  }),
 
   /**
    * Apellido del usuario
    */
-  lastName: string;
+  lastName: z.string({
+    description: 'User last name',
+  }),
 
   /**
    * Nombre completo del usuario (calculado)
    */
-  fullName: string;
+  fullName: z.string({
+    description: 'User full name (computed from firstName + lastName)',
+  }),
 
   /**
    * Estado activo del usuario
    */
-  isActive: boolean;
+  isActive: z.boolean({
+    description: 'Whether the user account is active',
+  }),
 
   /**
    * Fecha de creación (ISO 8601)
    */
-  createdAt: string;
+  createdAt: z.string().datetime({
+    message: 'Invalid datetime format',
+  }).describe('Timestamp when the user was created (ISO 8601)'),
 
   /**
    * Fecha de última actualización (ISO 8601)
    */
-  updatedAt: string;
-}
+  updatedAt: z.string().datetime({
+    message: 'Invalid datetime format',
+  }).describe('Timestamp when the user was last updated (ISO 8601)'),
+});
+
+/**
+ * Tipo TypeScript inferido del schema
+ *
+ * 🎯 VENTAJA: El tipo se deriva automáticamente del schema
+ * Si cambias el schema, el tipo se actualiza automáticamente
+ */
+export type UserResponseDto = z.infer<typeof UserResponseSchema>;
 
 /**
  * Mapper para convertir entidad User a UserResponseDto

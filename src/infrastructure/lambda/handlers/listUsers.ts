@@ -13,31 +13,14 @@
  */
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { z } from 'zod';
 import { CloudWatchLogger } from '@infrastructure/adapters/CloudWatchLogger';
 import { DynamoDBUserRepository } from '@infrastructure/repositories/DynamoDBUserRepository';
 import { ListUsersUseCase } from '@application/use-cases/ListUsersUseCase';
 import { commonResponses } from '@infrastructure/http/apiResponse';
 import { handleError } from '@infrastructure/http/errorHandler';
 import { awsConfig } from '@infrastructure/config/awsConfig';
-
-/**
- * Schema de validación para query parameters
- *
- * 📚 EXAMEN AWS: Query Parameter Validation
- * - limit: cuántos items retornar (default 20, max 100)
- * - nextToken: cursor para siguiente página (opaque token)
- */
-const listUsersQuerySchema = z.object({
-  limit: z
-    .string()
-    .optional()
-    .transform((val) => (val ? parseInt(val, 10) : 20))
-    .pipe(z.number().int().min(1).max(100)),
-  nextToken: z.string().optional(),
-});
-
-type ListUsersQuery = z.infer<typeof listUsersQuerySchema>;
+import { UserListResponseDto } from '@application/dtos/UserListResponseDto';
+import { ListUsersQuerySchema, ListUsersQueryDto } from '@application/dtos/ListUsersQueryDto';
 
 /**
  * Lambda Handler: List Users (Paginated)
@@ -105,10 +88,10 @@ export const handler = async (
       path: event.path,
     });
 
-    // 1. Parse y validar query parameters
-    let queryParams: ListUsersQuery;
+    // 1. Parse y validar query parameters usando DTO
+    let queryParams: ListUsersQueryDto;
     try {
-      queryParams = listUsersQuerySchema.parse(
+      queryParams = ListUsersQuerySchema.parse(
         event.queryStringParameters || {},
       );
     } catch (error) {
@@ -136,18 +119,20 @@ export const handler = async (
       nextToken: queryParams.nextToken,
     });
 
-    // 4. Retornar respuesta paginada
+    // 4. Retornar respuesta paginada usando UserListResponseDto
     logger.info('Users listed successfully', {
       count: result.items.length,
       hasNextToken: !!result.nextToken,
     });
 
-    return commonResponses.ok({
+    const response: UserListResponseDto = {
       users: result.items,
       nextToken: result.nextToken,
       count: result.items.length,
       limit: queryParams.limit,
-    });
+    };
+
+    return commonResponses.ok(response);
   } catch (error) {
     // 5. Manejo centralizado de errores
     return handleError(error, logger, { operation: 'listUsers' });

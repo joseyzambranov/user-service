@@ -14,10 +14,11 @@
     "test:coverage": "jest --coverage",
     "lint": "eslint src/**/*.ts infrastructure/**/*.ts",
     "lint:fix": "eslint src/**/*.ts infrastructure/**/*.ts --fix",
-    "swagger:generate": "ts-node src/infrastructure/swagger/swaggerGenerator.ts",
+    "swagger:generate": "ts-node -r tsconfig-paths/register --project tsconfig.json src/infrastructure/swagger/swaggerGenerator.ts",
+    "swagger:serve": "npx http-server docs/swagger-ui -p 3001 -o --cors",
     "cdk:synth": "cdk synth",
     "cdk:diff": "cdk diff",
-    "cdk:deploy": "cdk deploy --require-approval never",
+    "cdk:deploy": "cdk deploy",
     "cdk:deploy:hotswap": "cdk deploy --hotswap --require-approval never",
     "cdk:destroy": "cdk destroy",
     "cdk:bootstrap": "cdk bootstrap",
@@ -50,6 +51,7 @@
     "jest-cucumber": "^4.5.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.49.0"
   }

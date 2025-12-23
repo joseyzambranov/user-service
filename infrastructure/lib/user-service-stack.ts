@@ -16,6 +16,10 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as lambdaNodejs from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as apigateway from 'aws-cdk-lib/aws-apigateway';
 import * as logs from 'aws-cdk-lib/aws-logs';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import * as s3deploy from 'aws-cdk-lib/aws-s3-deployment';
+import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Construct } from 'constructs';
 import * as path from 'path';
 
@@ -453,7 +457,68 @@ export class UserServiceStack extends cdk.Stack {
     );
 
     // ========================================
-    // 6. CloudFormation Outputs
+    // 6. S3 + CloudFront for Swagger UI
+    // ========================================
+
+    /**
+     * 📚 EXAMEN AWS: S3 Bucket for Static Website Hosting
+     *
+     * S3 Bucket para servir Swagger UI (HTML, CSS, JS)
+     * - No public access (CloudFront accede vía OAI)
+     * - Encryption at rest
+     * - Lifecycle policy para cleanup
+     */
+    const swaggerBucket = new s3.Bucket(this, 'SwaggerUIBucket', {
+      bucketName: `user-service-swagger-${this.account}-${this.region}`,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL, // No public access
+      encryption: s3.BucketEncryption.S3_MANAGED, // Encryption at rest
+      removalPolicy: cdk.RemovalPolicy.DESTROY, // ⚠️ Dev only, use RETAIN in prod
+      autoDeleteObjects: true, // Cleanup on stack delete
+      versioned: false, // No versioning needed for docs
+    });
+
+    /**
+     * 📚 EXAMEN AWS: CloudFront Distribution
+     *
+     * CDN global para servir Swagger UI con baja latencia
+     * - Origin Access Identity (OAI) para acceso seguro a S3
+     * - HTTPS only (redirect HTTP → HTTPS)
+     * - Cache optimizado para archivos estáticos
+     * - Edge locations globales
+     */
+    const distribution = new cloudfront.Distribution(this, 'SwaggerDistribution', {
+      comment: 'CloudFront distribution for User Service Swagger UI',
+      defaultBehavior: {
+        origin: new origins.S3Origin(swaggerBucket), // OAI creado automáticamente
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+        cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED, // Cache headers, query strings
+        allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
+        compress: true, // Gzip compression
+      },
+      defaultRootObject: 'index.html', // Default file
+      priceClass: cloudfront.PriceClass.PRICE_CLASS_100, // US, Canada, Europe (cheaper)
+      enableLogging: false, // No access logs (save costs in dev)
+    });
+
+    /**
+     * 📚 EXAMEN AWS: S3 Bucket Deployment
+     *
+     * Despliega archivos locales a S3 automáticamente durante cdk deploy
+     * - Source.asset() copia carpeta local → S3
+     * - Invalida cache de CloudFront automáticamente
+     * - Ejecuta durante deploy, no en synth
+     */
+    new s3deploy.BucketDeployment(this, 'DeploySwaggerUI', {
+      sources: [
+        s3deploy.Source.asset(path.join(__dirname, '../../docs/swagger-ui')), // index.html + openapi.json
+      ],
+      destinationBucket: swaggerBucket,
+      distribution, // Invalida cache en CloudFront después de deploy
+      distributionPaths: ['/*'], // Invalida todos los archivos
+    });
+
+    // ========================================
+    // 7. CloudFormation Outputs
     // ========================================
 
     /**
@@ -514,6 +579,19 @@ export class UserServiceStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'ListUsersFunctionArn', {
       value: listUsersFunction.functionArn,
       description: 'ListUsers Lambda ARN',
+    });
+
+    /**
+     * 📚 EXAMEN AWS: CloudFront URL Output
+     *
+     * URL de Swagger UI servida vía CloudFront
+     * - Acceso global con baja latencia
+     * - HTTPS automático
+     */
+    new cdk.CfnOutput(this, 'SwaggerUIUrl', {
+      value: `https://${distribution.distributionDomainName}`,
+      description: 'Swagger UI URL (CloudFront CDN)',
+      exportName: 'UserServiceSwaggerUrl',
     });
   }
 }

@@ -19,6 +19,7 @@ import { GetUserUseCase } from '@application/use-cases/GetUserUseCase';
 import { commonResponses } from '@infrastructure/http/apiResponse';
 import { handleError } from '@infrastructure/http/errorHandler';
 import { awsConfig } from '@infrastructure/config/awsConfig';
+import { UserIdParamSchema, UserIdParamDto } from '@application/dtos/UserIdParamDto';
 
 /**
  * Lambda Handler: Get User by ID
@@ -67,21 +68,18 @@ export const handler = async (
       path: event.path,
     });
 
-    // 1. Extraer y validar path parameter
-    const userId = event.pathParameters?.id;
-
-    if (!userId) {
-      logger.warn('User ID path parameter is missing');
-      return commonResponses.badRequest('User ID is required');
+    // 1. Extraer y validar path parameter usando DTO
+    let pathParams: UserIdParamDto;
+    try {
+      pathParams = UserIdParamSchema.parse(event.pathParameters);
+    } catch (error) {
+      logger.warn('Invalid path parameters');
+      return handleError(error, logger, { operation: 'getUser' });
     }
 
-    // 2. Validación básica de formato (opcional pero recomendado)
-    if (userId.trim().length === 0) {
-      logger.warn('User ID is empty', { userId });
-      return commonResponses.badRequest('User ID cannot be empty');
-    }
+    const userId = pathParams.id;
 
-    // 3. Inicializar dependencias
+    // 2. Inicializar dependencias
     const userRepository = new DynamoDBUserRepository(
       awsConfig.tableName,
       logger,

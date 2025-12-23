@@ -12,6 +12,8 @@
  * - Serializa JSON correctamente
  */
 
+import { ErrorResponseDto } from '@application/dtos/ErrorResponseDto';
+
 /**
  * Lambda/API Gateway response format
  *
@@ -34,15 +36,9 @@ export interface SuccessResponse<T = any> {
 
 /**
  * Error response data wrapper
+ * Reutiliza ErrorResponseDto para consistencia con OpenAPI
  */
-export interface ErrorResponse {
-  success: false;
-  error: {
-    message: string;
-    code?: string;
-    details?: any;
-  };
-}
+export type ErrorResponse = ErrorResponseDto;
 
 /**
  * Default CORS headers

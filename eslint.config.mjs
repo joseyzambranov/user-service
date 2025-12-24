@@ -45,5 +45,17 @@ export default [
       "prefer-const": "error",
       "no-var": "error"
     }
+  },
+
+  // Excepciones para archivos de logging y scripts
+  {
+    files: [
+      "**/logger/**/*.ts",
+      "**/adapters/*Logger.ts",
+      "**/swaggerGenerator.ts"
+    ],
+    rules: {
+      "no-console": "off"
+    }
   }
 ];

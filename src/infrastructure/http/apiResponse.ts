@@ -28,7 +28,7 @@ export interface APIGatewayResponse {
 /**
  * Success response data wrapper
  */
-export interface SuccessResponse<T = any> {
+export interface SuccessResponse<T = unknown> {
   success: true;
   data: T;
   message?: string;
@@ -105,7 +105,7 @@ export function error(
   message: string,
   statusCode: number = 500,
   code?: string,
-  details?: any,
+  details?: Record<string, unknown>,
 ): APIGatewayResponse {
   const response: ErrorResponse = {
     success: false,
@@ -151,8 +151,8 @@ export const commonResponses = {
   /**
    * 400 Bad Request - Request inválido
    */
-  badRequest: (message: string = 'Bad Request', details?: any) =>
-    error(message, 400, 'BAD_REQUEST', details),
+  badRequest: (message: string = 'Bad Request', details?: unknown) =>
+    error(message, 400, 'BAD_REQUEST', details as Record<string, unknown>),
 
   /**
    * 401 Unauthorized - No autenticado
@@ -175,14 +175,14 @@ export const commonResponses = {
   /**
    * 409 Conflict - Conflicto (ej: email duplicado)
    */
-  conflict: (message: string = 'Conflict', details?: any) =>
-    error(message, 409, 'CONFLICT', details),
+  conflict: (message: string = 'Conflict', details?: unknown) =>
+    error(message, 409, 'CONFLICT', details as Record<string, unknown>),
 
   /**
    * 422 Unprocessable Entity - Validación fallida
    */
-  unprocessableEntity: (message: string, validationErrors?: any) =>
-    error(message, 422, 'VALIDATION_ERROR', validationErrors),
+  unprocessableEntity: (message: string, validationErrors?: unknown) =>
+    error(message, 422, 'VALIDATION_ERROR', validationErrors as Record<string, unknown>),
 
   /**
    * 500 Internal Server Error - Error del servidor

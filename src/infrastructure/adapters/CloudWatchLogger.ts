@@ -132,7 +132,7 @@ export class CloudWatchLogger implements ILogger {
    * - Facilita debugging distribuido
    */
   private log(level: LogLevel, message: string, metadata?: LogMetadata): void {
-    const logEntry: Record<string, any> = {
+    const logEntry: Record<string, unknown> = {
       level,
       context: this.context,
       message,

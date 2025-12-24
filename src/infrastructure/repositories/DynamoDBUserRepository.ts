@@ -251,7 +251,7 @@ export class DynamoDBUserRepository implements IUserRepository {
   async list(options?: ListUsersOptions): Promise<ListUsersResult> {
     const limit = options?.limit ?? 20;
     const exclusiveStartKey = options?.lastEvaluatedKey
-      ? this.decodeLastEvaluatedKey(options.lastEvaluatedKey)
+      ? marshall(this.decodeLastEvaluatedKey(options.lastEvaluatedKey))
       : undefined;
 
     const response = await this.client.send(
@@ -271,7 +271,7 @@ export class DynamoDBUserRepository implements IUserRepository {
       .map((item) => this.toEntity(item));
 
     const lastEvaluatedKey = response.LastEvaluatedKey
-      ? this.encodeLastEvaluatedKey(response.LastEvaluatedKey)
+      ? this.encodeLastEvaluatedKey(unmarshall(response.LastEvaluatedKey))
       : undefined;
 
     this.logger.info('Users listed from DynamoDB', {
@@ -356,14 +356,14 @@ export class DynamoDBUserRepository implements IUserRepository {
    * - El cliente no debe conocer la estructura interna
    * - Token opaco (base64) es más seguro
    */
-  private encodeLastEvaluatedKey(key: Record<string, any>): string {
+  private encodeLastEvaluatedKey(key: Record<string, unknown>): string {
     return Buffer.from(JSON.stringify(key)).toString('base64');
   }
 
   /**
    * Decodifica LastEvaluatedKey desde base64
    */
-  private decodeLastEvaluatedKey(token: string): Record<string, any> {
-    return JSON.parse(Buffer.from(token, 'base64').toString('utf-8'));
+  private decodeLastEvaluatedKey(token: string): Record<string, unknown> {
+    return JSON.parse(Buffer.from(token, 'base64').toString('utf-8')) as Record<string, unknown>;
   }
 }

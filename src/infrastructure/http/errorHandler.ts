@@ -12,7 +12,7 @@
  */
 
 import { ZodError } from 'zod';
-import { ILogger } from '@shared/logger/ILogger';
+import { ILogger, LogMetadata } from '@shared/logger/ILogger';
 import { DomainError } from '@shared/errors/DomainError';
 import { DuplicateUserError } from '@domain/errors/DuplicateUserError';
 import { InvalidUserDataError } from '@domain/errors/InvalidUserDataError';
@@ -26,7 +26,7 @@ interface ErrorInfo {
   message: string;
   statusCode: number;
   code: string;
-  details?: any;
+  details?: unknown;
   isOperational: boolean; // Si es un error esperado del negocio
 }
 
@@ -159,7 +159,7 @@ function extractErrorInfo(error: unknown): ErrorInfo {
 export function handleError(
   error: unknown,
   logger: ILogger,
-  context?: Record<string, any>,
+  context?: Record<string, unknown>,
 ): APIGatewayResponse {
   const errorInfo = extractErrorInfo(error);
   const isProduction = process.env.NODE_ENV === 'production';
@@ -167,13 +167,16 @@ export function handleError(
   // Log del error para CloudWatch
   if (errorInfo.isOperational) {
     // Errores de negocio (esperados) → log como warning
-    logger.warn('Operational error occurred', {
+    const metadata: LogMetadata = {
       code: errorInfo.code,
       message: errorInfo.message,
       statusCode: errorInfo.statusCode,
-      details: errorInfo.details,
       ...context,
-    });
+    };
+    if (errorInfo.details) {
+      metadata.details = errorInfo.details as object;
+    }
+    logger.warn('Operational error occurred', metadata);
   } else {
     // Errores técnicos (no esperados) → log como error con stack trace
     logger.error('Unexpected error occurred', error as Error, {
